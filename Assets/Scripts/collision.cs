@@ -10,10 +10,13 @@ public class collision : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("[CS135] Ball triggered collision");
-        other.attachedRigidbody.isKinematic = true;
-        other.gameObject.transform.position = new Vector3(-14.9029999f, 0.98299998f, 1.18499947f);
-        other.attachedRigidbody.isKinematic = false;
+        if (other.gameObject.name == "Bowling_ball")
+        {
+            Debug.Log("[CS135] Ball triggered collision");
+            other.attachedRigidbody.isKinematic = true;
+            other.gameObject.transform.position = new Vector3(-14.9029999f, 0.98299998f, 1.18499947f);
+            other.attachedRigidbody.isKinematic = false;
+        }
     }
 
     void OnTriggerStay(Collider other)

@@ -1,21 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class ScoreUpdate : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public Rigidbody rb;
-    public GameObject ball;
-    public GameObject pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8, pin9, pin10;
+    public Collider bc;
+    public Collider pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8, pin9, pin10;
 
     // private GameObject[] gameObjects = { pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8, pin9, pin10 };
 
-    int score;
     public Text scoreText;
     int turn = 1;
     int frame = 1;
     int points = 0;
     private Vector3 pin1_pos, pin2_pos, pin3_pos, pin4_pos, pin5_pos, pin6_pos, pin7_pos, pin8_pos, pin9_pos, pin10_pos;
+
+
+    int total_round_score = 0;
+    
     int frame1_1 = 0;
     int frame1_2 = 0;
     int frame2_1 = 0;
@@ -24,9 +26,22 @@ public class NewMonoBehaviourScript : MonoBehaviour
     int frame3_2 = 0;
     private Quaternion rotation = Quaternion.Euler(-90, 0, 0);
 
-    private bool waitBallReset = false;
+    // private bool waitBallReset = false;
 
-    private int score_update_called = 0;
+    // private int score_update_called = 0;
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "Bowling_ball")
+        {
+            Debug.Log("[CS135] Ball triggered collision");
+            other.attachedRigidbody.isKinematic = true;
+            other.gameObject.transform.position = new Vector3(-14.9029999f, 0.98299998f, 1.18499947f);
+            other.attachedRigidbody.isKinematic = false;
+            score_update();
+            Debug.Log("[CS135] Score updated from collision");
+        }
+    }
 
     void Start()
     {
@@ -47,55 +62,55 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
     void score_update()
     {
-        if (pin1.activeSelf && pin1.transform.rotation != rotation)
+        if (pin1.gameObject.activeSelf && pin1.transform.rotation != rotation)
         {
             points++;
-            pin1.SetActive(false);
+            pin1.gameObject.SetActive(false);
         }
-        if (pin2.activeSelf && pin2.transform.rotation != rotation)
+        if (pin2.gameObject.activeSelf && pin2.transform.rotation != rotation)
         {
             points++;
-            pin2.SetActive(false);
+            pin2.gameObject.SetActive(false);
         }
-        if (pin3.activeSelf && pin3.transform.rotation != rotation)
+        if (pin3.gameObject.activeSelf && pin3.transform.rotation != rotation)
         {
             points++;
-            pin3.SetActive(false);
+            pin3.gameObject.SetActive(false);
         }
-        if (pin4.activeSelf && pin4.transform.rotation != rotation)
+        if (pin4.gameObject.activeSelf && pin4.transform.rotation != rotation)
         {
             points++;
-            pin4.SetActive(false);
+            pin4.gameObject.SetActive(false);
         }
-        if (pin5.activeSelf && pin5.transform.rotation != rotation)
+        if (pin5.gameObject.activeSelf && pin5.transform.rotation != rotation)
         {
             points++;
-            pin5.SetActive(false);
+            pin5.gameObject.SetActive(false);
         }
-        if (pin6.activeSelf && pin6.transform.rotation != rotation)
+        if (pin6.gameObject.activeSelf && pin6.transform.rotation != rotation)
         {
             points++;
-            pin6.SetActive(false);
+            pin6.gameObject.SetActive(false);
         }
-        if (pin7.activeSelf && pin7.transform.rotation != rotation)
+        if (pin7.gameObject.activeSelf && pin7.transform.rotation != rotation)
         {
             points++;
-            pin7.SetActive(false);
+            pin7.gameObject.SetActive(false);
         }
-        if (pin8.activeSelf && pin8.transform.rotation != rotation)
+        if (pin8.gameObject.activeSelf && pin8.transform.rotation != rotation)
         {
             points++;
-            pin8.SetActive(false);
+            pin8.gameObject.SetActive(false);
         }
-        if (pin9.activeSelf && pin9.transform.rotation != rotation)
+        if (pin9.gameObject.activeSelf && pin9.transform.rotation != rotation)
         {
             points++;
-            pin9.SetActive(false);
+            pin9.gameObject.SetActive(false);
         }
-        if (pin10.activeSelf && pin10.transform.rotation != rotation)
+        if (pin10.gameObject.activeSelf && pin10.transform.rotation != rotation)
         {
             points++;
-            pin10.SetActive(false);
+            pin10.gameObject.SetActive(false);
         }
 
         if (turn == 1)
@@ -111,6 +126,11 @@ public class NewMonoBehaviourScript : MonoBehaviour
             else if (frame == 3)
             {
                 frame3_1 = points;
+            }
+
+            if (points == 10)
+            {
+                turn = 2;
             }
 
         }
@@ -143,15 +163,15 @@ public class NewMonoBehaviourScript : MonoBehaviour
         }
         if (turn >= 2)
         {
-            turn = 1;
+            turn = 0;
             frame++;
             reset_game();
         }
         scoreText.text = "| " + frame1_1 + " " + frame1_2 + " | " + frame2_1 + " " + frame2_2 + " | " + frame3_1 + " " + frame3_2 + " | ";
         points = 0;
-        score_update_called = 0;
+        // score_update_called = 0;
         turn++;
-        reset_ball();
+        // reset_ball();
         Debug.Log("[CS135] ball reset");
     }
 
@@ -170,40 +190,16 @@ public class NewMonoBehaviourScript : MonoBehaviour
             frame3_1 = 0;
             frame3_2 = 0;
             scoreText.text = "| " + frame1_1 + " " + frame1_2 + " | " + frame2_1 + " " + frame2_2 + " | " + frame3_1 + " " + frame3_2 + " | ";
-            waitBallReset = false;
         }
-
-        if (ball.transform.position.x < 2.24f)
-        {
-            waitBallReset = false;
-        }
-
-        if (ball.transform.position.x >= 2.24f && !waitBallReset)
-        {
-            Debug.Log("[CS135] Ball passed line");
-            waitBallReset = true;
-            score_update();
-            // Debug.Log("[CS135] Object: " + transform.name);
-        }
-
-        // if (waitBallReset)
-        // {
-        //     if (score_update_called < 1)
-        //     {
-        //         score_update_called++;
-        //         //score_update();
-        //     }
-        //     // Debug.Log("[CS135] score_update_called: " + score_update_called);
-
-        // }
         
     }
 
     void reset_ball()
     {
-        rb.isKinematic = true;
-        ball.transform.position = new Vector3(-18.6690006f,6.19399977f,-0.103327632f);
-        rb.isKinematic = false;
+        bc.attachedRigidbody.isKinematic = true;
+        bc.gameObject.transform.position = new Vector3(-14.9029999f, 0.98299998f, 1.18499947f);
+        bc.attachedRigidbody.isKinematic = false;
+        
     }
 
     void reset_game()
@@ -211,48 +207,66 @@ public class NewMonoBehaviourScript : MonoBehaviour
         reset_ball();
 
         //add timer
-        pin1.SetActive(true);
-        pin2.SetActive(true);
-        pin3.SetActive(true);
-        pin4.SetActive(true);
-        pin5.SetActive(true);
-        pin6.SetActive(true);
-        pin7.SetActive(true);
-        pin8.SetActive(true);
-        pin9.SetActive(true);
-        pin10.SetActive(true);
+        pin1.gameObject.SetActive(true);
+        pin2.gameObject.SetActive(true);
+        pin3.gameObject.SetActive(true);
+        pin4.gameObject.SetActive(true);
+        pin5.gameObject.SetActive(true);
+        pin6.gameObject.SetActive(true);
+        pin7.gameObject.SetActive(true);
+        pin8.gameObject.SetActive(true);
+        pin9.gameObject.SetActive(true);
+        pin10.gameObject.SetActive(true);
 
 
-        pin1.transform.position = pin1_pos;
-        pin1.transform.rotation = rotation;
+        pin1.attachedRigidbody.isKinematic = true;
+        pin1.gameObject.transform.position = pin1_pos;
+        pin1.gameObject.transform.rotation = rotation;
 
+
+        pin2.attachedRigidbody.isKinematic = true;
         pin2.transform.position = pin2_pos;
         pin2.transform.rotation = rotation;
+        pin2.attachedRigidbody.isKinematic = false;
 
+        pin3.attachedRigidbody.isKinematic = true;
         pin3.transform.position = pin3_pos;
         pin3.transform.rotation = rotation;
+        pin3.attachedRigidbody.isKinematic = false;
 
+        pin4.attachedRigidbody.isKinematic = true;
         pin4.transform.position = pin4_pos;
         pin4.transform.rotation = rotation;
+        pin4.attachedRigidbody.isKinematic = false;
 
+        pin5.attachedRigidbody.isKinematic = true;
         pin5.transform.position = pin5_pos;
         pin5.transform.rotation = rotation;
+        pin5.attachedRigidbody.isKinematic = false;
 
+        pin6.attachedRigidbody.isKinematic = true;
         pin6.transform.position = pin6_pos;
         pin6.transform.rotation = rotation;
+        pin6.attachedRigidbody.isKinematic = false;
 
+        pin7.attachedRigidbody.isKinematic = true;
         pin7.transform.position = pin7_pos;
         pin7.transform.rotation = rotation;
+        pin7.attachedRigidbody.isKinematic = false;
 
+        pin8.attachedRigidbody.isKinematic = true;
         pin8.transform.position = pin8_pos;
         pin8.transform.rotation = rotation;
+        pin8.attachedRigidbody.isKinematic = false;
 
+        pin9.attachedRigidbody.isKinematic = true;
         pin9.transform.position = pin9_pos;
         pin9.transform.rotation = rotation;
+        pin9.attachedRigidbody.isKinematic = false;
 
+        pin10.attachedRigidbody.isKinematic = true;
         pin10.transform.position = pin10_pos;
         pin10.transform.rotation = rotation;
-
-            
+        pin10.attachedRigidbody.isKinematic = false;
     }
 }
