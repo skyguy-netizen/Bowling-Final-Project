@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Bowling-Final-Project.sln"
+    "dotnet.defaultSolution": "Bowling Final Project.sln"
 }
